@@ -1,0 +1,306 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ANA_ESTIMATE_BILLING — Billing & Collection</title>
+<style>
+:root{--navy:#10243e;--blue:#173f6d;--red:#d71920;--green:#16844b;--yellow:#f5c400;--bg:#f3f5f8;--card:#fff;--text:#17212b;--muted:#66717d;--line:#dce2e8}
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+button,input,select,textarea{font:inherit}button{cursor:pointer}
+.app{display:flex;min-height:100vh}.side{width:245px;background:linear-gradient(180deg,#0d2037,#173f6d);color:#fff;padding:18px 14px;position:sticky;top:0;height:100vh}
+.brand{padding:10px 10px 18px;border-bottom:1px solid #ffffff2b;margin-bottom:12px}.brand b{font-size:21px}.brand small{display:block;color:#d7e5f4;margin-top:5px}
+.nav button{display:block;width:100%;text-align:left;background:transparent;border:0;color:#dce8f5;padding:12px;border-radius:9px;margin:3px 0}.nav button.active,.nav button:hover{background:#ffffff18;color:#fff}
+.main{flex:1;min-width:0}.top{background:#fff;border-bottom:1px solid var(--line);padding:13px 20px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:10}.top h1{font-size:20px;margin:0}.tag{font-size:12px;background:#fff4c2;color:#6d5700;padding:6px 9px;border-radius:20px;font-weight:700}
+.content{padding:20px;max-width:1500px;margin:auto}.page{display:none}.page.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}.card,.panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 2px 8px #14213d08}.stat .label{color:var(--muted);font-size:12px}.stat .value{font-size:23px;font-weight:800;margin-top:7px}.green .value{color:var(--green)}.red .value{color:var(--red)}
+.grid2{display:grid;grid-template-columns:1.35fr .65fr;gap:16px;margin-top:16px}.panel h2{font-size:16px;margin:0 0 14px}.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:12px}
+input,select,textarea{width:100%;border:1px solid #ccd5df;border-radius:8px;padding:9px 10px;background:#fff;color:#17212b;outline:none}input:focus,select:focus,textarea:focus{border-color:#4678ac;box-shadow:0 0 0 3px #4678ac18}
+.btn.wa{background:#25D366;color:#fff}.btn{border:0;border-radius:8px;padding:9px 13px;font-weight:700}.primary{background:var(--blue);color:#fff}.danger{background:#ffe5e6;color:#a50f15}.success{background:#def6e8;color:#116c3d}.light{background:#eef2f6;color:#253444}.yellow{background:var(--yellow);color:#241f00}
+.formgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.field label{font-size:11px;font-weight:700;color:#56616d;display:block;margin-bottom:5px}.span2{grid-column:span 2}.span4{grid-column:1/-1}
+.billhead{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}.company{border:2px solid var(--blue);border-radius:10px;padding:13px}.company h2{margin:0;color:var(--red);font-size:22px}.company p{margin:4px 0;font-size:12px}.docbox{border:1px solid var(--line);border-radius:10px;padding:13px}
+.items{overflow:auto;border:1px solid var(--line);border-radius:10px}.items table{width:100%;border-collapse:collapse;min-width:900px}.items th{background:#173f6d;color:#fff;font-size:11px;text-align:left;padding:8px}.items td{padding:6px;border-top:1px solid var(--line);vertical-align:middle}.items input,.items select{padding:7px}.right{text-align:right!important}
+.totals{margin-left:auto;width:min(440px,100%);margin-top:12px}.totals div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px dashed var(--line)}.totals .grand{font-size:18px;font-weight:900;border-bottom:0}
+.notice{font-size:11px;color:var(--muted);padding:10px;background:#f7f9fb;border-radius:8px;margin-top:12px}
+table.report{width:100%;border-collapse:collapse}table.report th,table.report td{padding:9px;border-bottom:1px solid var(--line);text-align:left;font-size:12px}table.report th{background:#f5f7fa}
+.empty{padding:30px;text-align:center;color:var(--muted)}.pill{display:inline-block;padding:4px 8px;border-radius:12px;background:#eaf0f6;font-size:11px;font-weight:800}.muted{color:var(--muted)}
+.search{max-width:270px}.mobilebar{display:none}.app-footer{position:fixed;left:245px;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);padding:7px;text-align:center;font-size:11px;color:var(--muted);z-index:9}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:16px;z-index:30}.modal.show{display:flex}.modalbox{background:#fff;border-radius:14px;max-width:760px;width:100%;max-height:92vh;overflow:auto;padding:18px}.modalhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.qrbox{text-align:center;border:1px dashed #aaa;border-radius:10px;padding:10px;background:#fff}.qrbox img{width:190px;height:190px;max-width:100%}.hide{display:none!important}
+@media(max-width:900px){.side{display:none}.mobilebar{display:flex;background:#0d2037;color:#fff;padding:8px;gap:6px;overflow:auto;position:sticky;top:0;z-index:20}.mobilebar button{white-space:nowrap;border:0;background:#ffffff18;color:#fff;border-radius:8px;padding:8px 10px}.cards{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}.formgrid{grid-template-columns:repeat(2,1fr)}.content{padding:12px}.top{top:45px}.span2,.span4{grid-column:auto}.billhead{grid-template-columns:1fr}.app-footer{left:0}}
+@media(max-width:520px){.cards{grid-template-columns:1fr 1fr}.formgrid{grid-template-columns:1fr 1fr}.btn{padding:8px 10px;font-size:12px}.stat .value{font-size:18px}}
+@page{size:A5 portrait;margin:7mm}
+@media print{
+  html,body{width:148mm;min-height:210mm;background:#fff}
+  body{margin:0;font-size:9px}
+  .side,.mobilebar,.top,.no-print,.app-footer{display:none!important}
+  .main{width:100%;min-width:0}
+  .content{padding:0;max-width:none}
+  .page{display:none!important}
+  .page.active{display:block!important}
+  .panel{border:0;box-shadow:none;padding:0;margin:0}
+  .toolbar{display:none!important}
+  .cards{grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:6px}
+  .card{padding:5px;border:1px solid #aaa;border-radius:4px;box-shadow:none}
+  .stat .label{font-size:7px}
+  .stat .value{font-size:11px;margin-top:2px}
+  .grid2{display:block;margin-top:6px}
+  .grid2>.panel{margin-bottom:8px}
+  .billhead{grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px}
+  .company,.docbox{padding:6px;border-radius:4px}
+  .company h2{font-size:15px}
+  .company p{font-size:7px;margin:2px 0}
+  .formgrid{gap:4px}
+  .field label{font-size:7px;margin-bottom:2px}
+  input,select,textarea{padding:3px 4px;font-size:8px;border-radius:3px}
+  .items{border:1px solid #888;border-radius:3px;overflow:visible}
+  .items table{min-width:0;width:100%;table-layout:auto}
+  .items th{font-size:7px;padding:3px}
+  .items td{font-size:7px;padding:3px}
+  .items input,.items select{border:0;padding:0;appearance:none;background:transparent;font-size:7px}
+  table.report{width:100%;table-layout:auto}
+  table.report th,table.report td{padding:3px;font-size:7px}
+  table.report th{background:#eee}
+  .totals{width:48%;margin-top:6px}
+  .totals div{padding:3px 0;font-size:8px}
+  .totals .grand{font-size:11px}
+  .totals input{font-size:8px;padding:1px}
+  .notice{font-size:7px;padding:5px;margin-top:6px}
+  .qrbox{break-inside:avoid;page-break-inside:avoid;border:1px dashed #777;padding:6px}
+  .qrbox img{width:42mm;height:42mm}
+  .modal{position:static!important;background:#fff!important;padding:0!important}
+  .modal.show{display:block!important}
+  .modalbox{max-width:none!important;width:100%!important;max-height:none!important;overflow:visible!important;padding:0!important;border-radius:0!important}
+  #qrModal .modalhead{display:none!important}
+  #qrModal .qrbox{margin-top:4mm}
+  #qrInfo{font-size:9px}
+  .print-only{display:block!important}
+}
+.print-only{display:none}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="side">
+ <div class="brand"><b>ANA_ESTIMATE_BILLING</b><small>Steel • Cement • Roofing • Handy Billing</small></div>
+ <div class="nav">
+  <button class="active" data-page="dashboard">📊 Dashboard</button>
+  <button data-page="billing">🧾 New Bill / Estimate</button>
+  <button data-page="sales">📅 Sales Report</button>
+  <button data-page="quotations">📋 Quotations</button>
+  <button data-page="payments">💳 Payments / Collection</button>
+  <button data-page="customers">👤 Customers / Ledger</button>
+  <button data-page="products">📦 Products & Brands</button>
+  <button data-page="backup">⚙️ Backup / Settings</button>
+ </div>
+</aside>
+<div class="main">
+<div class="mobilebar">
+ <button data-page="dashboard">Dashboard</button><button data-page="billing">Billing</button><button data-page="sales">Sales</button><button data-page="quotations">Quotes</button><button data-page="payments">Payments</button><button data-page="customers">Customers</button><button data-page="products">Products</button>
+</div>
+<header class="top"><h1 id="pageTitle">Dashboard</h1><span class="tag">GST / NON-GST • Offline Data</span></header>
+<main class="content">
+
+<section id="dashboard" class="page active">
+ <div class="cards">
+  <div class="card stat"><div class="label">Today's Sales</div><div class="value" id="dToday">₹0.00</div></div>
+  <div class="card stat green"><div class="label">Today's Collection</div><div class="value" id="dTodayPaid">₹0.00</div></div>
+  <div class="card stat"><div class="label">Total Sales</div><div class="value" id="dSales">₹0.00</div></div>
+  <div class="card stat green"><div class="label">Total Collection</div><div class="value" id="dCollection">₹0.00</div></div>
+  <div class="card stat"><div class="label">Outstanding</div><div class="value" id="dOutstanding">₹0.00</div></div>
+  <div class="card stat"><div class="label">Estimates / Bills</div><div class="value" id="dBills">0</div></div>
+  <div class="card stat"><div class="label">Quotations</div><div class="value" id="dQuotes">0</div></div>
+  <div class="card stat"><div class="label">Customers</div><div class="value" id="dCustomers">0</div></div>
+ </div>
+ <div class="grid2">
+  <div class="panel"><div class="toolbar"><h2 style="margin-right:auto">Recent Bills</h2><button class="btn primary" onclick="newBill('estimate')">+ New Bill</button></div><div id="recent"></div></div>
+  <div class="panel"><h2>Quick Actions</h2><div class="toolbar">
+   <button class="btn primary" onclick="newBill('estimate')">GST / Non-GST Bill</button>
+   <button class="btn yellow" onclick="newBill('quotation')">Quotation</button>
+   <button class="btn success" onclick="openPayment()">Record Collection</button>
+   <button class="btn light" onclick="go('customers')">Customer Ledger</button>
+  </div><div class="notice"><b>Reporting:</b> Bills/estimates are included in Sales, Customer Ledger and payment status. Quotations are kept separately and do not count as sales or collections until converted/saved as a bill.</div></div>
+ </div>
+</section>
+
+<section id="billing" class="page">
+<div class="panel">
+ <div class="billhead">
+  <div class="company"><h2>ANA_ESTIMATE_BILLING</h2><p><b>Steel • Cement • Structural & Roofing Materials</b></p></div>
+  <div class="docbox"><div class="formgrid">
+   <div class="field"><label>Document Type</label><select id="docType" onchange="docTypeChanged()"><option value="estimate">BILL / ESTIMATE</option><option value="quotation">QUOTATION</option></select></div>
+   <div class="field"><label>Document No. (manual)</label><input id="docNo" maxlength="12" placeholder="ES-001 / QT-001"></div>
+   <div class="field"><label>Date</label><input id="billDate" type="date"></div>
+   <div class="field"><label>Tax Type</label><select id="taxType" onchange="recalc()"><option value="non-gst">NON-GST</option><option value="gst">GST</option></select></div>
+   <div class="field"><label>GST %</label><select id="gstRate" onchange="recalc()"><option>0</option><option>5</option><option>12</option><option>18</option><option>28</option></select></div>
+   <div class="field"><label>Payment Mode</label><select id="paymentMode" onchange="recalc()"><option value="Unpaid">Unpaid</option><option value="Cash">Cash</option><option value="UPI">UPI</option><option value="Bank Transfer">Bank Transfer</option><option value="Cheque">Cheque</option><option value="Other">Other</option></select></div>
+   <div class="field"><label>Paid Now</label><input id="paidNow" type="number" min="0" step=".01" value="0" oninput="recalc()"></div>
+  </div></div>
+ </div>
+ <div class="formgrid">
+  <div class="field span2"><label>Customer Name</label><input id="customerName" placeholder="Customer / Party name"></div>
+  <div class="field"><label>Mobile</label><input id="customerPhone" inputmode="tel"></div>
+  <div class="field"><label>Place / Address</label><input id="customerAddress"></div>
+  <div class="field"><label>GSTIN (if applicable)</label><input id="customerGstin" placeholder="Optional"></div>
+  <div class="field"><label>Payment UPI ID</label><input id="upiId" placeholder="yourupi@bank"></div>
+  <div class="field span2"><label>Notes</label><input id="billNotes" placeholder="Transport / delivery / other notes"></div>
+ </div><br>
+ <div class="toolbar no-print"><button class="btn primary" onclick="addItem()">+ Add Item</button><button class="btn light" onclick="saveBill()">Save</button><button class="btn yellow" onclick="savePrint()">Save & Print</button><button class="btn success" onclick="showQR()">Payment QR</button><button class="btn wa" onclick="whatsappCurrent()">WhatsApp</button><button class="btn danger" onclick="clearBill()">Clear</button></div>
+ <div class="items"><table><thead><tr><th>#</th><th style="min-width:220px">Particulars</th><th style="min-width:170px">Brand</th><th>Qty</th><th>Unit</th><th>Rate</th><th class="right">Amount</th><th class="no-print"></th></tr></thead><tbody id="itemRows"></tbody></table></div>
+ <div class="totals">
+  <div><span>Subtotal</span><b id="subtotal">₹0.00</b></div>
+  <div><span>Discount</span><input id="discount" type="number" min="0" step=".01" value="0" style="max-width:160px;text-align:right" oninput="recalc()"></div>
+  <div id="gstRow" class="hide"><span>GST</span><b id="gstAmount">₹0.00</b></div>
+  <div class="grand"><span>Grand Total</span><span id="grandTotal">₹0.00</span></div>
+  <div><span>Paid</span><input id="paidAmount" type="number" readonly style="max-width:160px;text-align:right"></div>
+  <div><span>Balance</span><b id="balanceAmount">₹0.00</b></div>
+ </div>
+ <div id="invoiceQRPrint" class="print-only" style="text-align:center;margin-top:8px;padding-top:6px;border-top:1px solid #aaa">
+    <b>UPI PAYMENT QR</b><br>
+    <img id="invoiceQRImage" alt="UPI Payment QR" style="width:38mm;height:38mm;margin-top:4px">
+    <div id="invoiceQRText" style="font-size:8px;margin-top:3px"></div>
+  </div>
+  <div class="notice">For a later collection, use <b>Record Collection</b>. Payments are stored separately and update the bill's paid/balance figures. You can edit or delete saved records from reports.</div>
+</div>
+</section>
+
+<section id="sales" class="page"><div class="panel">
+ <div class="toolbar"><h2 style="margin-right:auto">Sales Report</h2><input class="search" id="salesSearch" placeholder="Search bill / customer / phone" oninput="renderSales()"><input type="date" id="salesDate" onchange="renderSales()"><button class="btn light" onclick="resetSales()">Reset</button><button class="btn primary" onclick="printReport('sales')">Print / PDF</button><button class="btn success" onclick="exportCSV('sales')">Excel / CSV</button></div>
+ <div id="salesSummary"></div><div id="salesTable"></div>
+</div></section>
+
+<section id="quotations" class="page"><div class="panel">
+ <div class="toolbar"><h2 style="margin-right:auto">Quotation Register</h2><input class="search" id="quoteSearch" placeholder="Search quotation / customer" oninput="renderQuotes()"><button class="btn primary" onclick="newBill('quotation')">+ New Quotation</button><button class="btn light" onclick="printReport('quotations')">Print / PDF</button></div>
+ <div id="quoteTable"></div>
+</div></section>
+
+<section id="payments" class="page"><div class="panel">
+ <div class="toolbar"><h2 style="margin-right:auto">Payments & Collection</h2><input type="date" id="payDate" onchange="renderPayments()"><button class="btn light" onclick="document.getElementById('payDate').value='';renderPayments()">All Dates</button><button class="btn success" onclick="openPayment()">+ Record Collection</button><button class="btn wa" onclick="whatsappOutstanding()">Payment Reminders</button><button class="btn primary" onclick="printReport('payments')">Print / PDF</button><button class="btn success" onclick="exportCSV('payments')">Excel / CSV</button></div>
+ <div id="paymentSummary"></div><div id="paymentTable"></div>
+</div></section>
+
+<section id="customers" class="page"><div class="panel">
+ <div class="toolbar"><h2 style="margin-right:auto">Customers / Ledger</h2><input class="search" id="custSearch" placeholder="Search customer / mobile" oninput="renderCustomers()"><button class="btn primary" onclick="printReport('customers')">Print / PDF</button><button class="btn success" onclick="exportCSV('customers')">Excel / CSV</button></div>
+ <div id="customerTable"></div>
+</div></section>
+
+<section id="products" class="page"><div class="panel">
+ <h2>Products & Brands</h2><div class="toolbar"><input id="newProduct" placeholder="Product name"><input id="newBrand" placeholder="Brand (optional)"><button class="btn primary" onclick="addProduct()">Add</button></div>
+ <div id="productList"></div>
+ <div class="notice"><b>Preloaded:</b> TATA TISCON, SURYADEV 550 CRS, SHYAM STEEL 550D, JSW STEEL, ARS STEEL, BRIGHT TMT, AGNI TMT, GBR TMT, BRILA TMT, VIZAG TMT and all cement brands supplied by ANA_ESTIMATE_BILLING.</div>
+</div></section>
+
+<section id="backup" class="page"><div class="panel">
+ <h2>Backup / Settings</h2><p class="muted">All data is stored in this browser. Export a JSON backup regularly.</p>
+ <div class="toolbar"><button class="btn primary" onclick="exportBackup()">Export Backup JSON</button><label class="btn light">Import Backup <input type="file" accept=".json" onchange="importBackup(event)" style="display:none"></label><button class="btn danger" onclick="resetAll()">Delete All Data</button></div>
+ <div class="notice">Software created by <b>Tanveer Ahmed Z</b>. This is a single-file browser application and works without a server.</div>
+</div></section>
+</main>
+<div class="app-footer">ANA_ESTIMATE_BILLING • Software created by <b>Tanveer Ahmed Z</b></div>
+</div></div>
+
+<div class="modal" id="payModal"><div class="modalbox"><div class="modalhead"><h2>Record Collection</h2><button class="btn light" onclick="closeModal('payModal')">Close</button></div>
+ <div class="formgrid">
+  <div class="field span2"><label>Bill</label><select id="payBill"></select></div><div class="field"><label>Date</label><input id="payDateNew" type="date"></div><div class="field"><label>Amount</label><input id="payAmt" type="number" min="0" step=".01"></div>
+  <div class="field"><label>Method</label><select id="payMode"><option>Cash</option><option>UPI</option><option>Bank Transfer</option><option>Cheque</option><option>Other</option></select></div><div class="field span2"><label>Note</label><input id="payNote"></div>
+ </div><br><button class="btn success" onclick="recordPayment()">Save Collection</button>
+</div></div>
+
+<div class="modal" id="qrModal"><div class="modalbox" style="max-width:430px"><div class="modalhead"><h2>UPI Payment QR</h2><button class="btn light" onclick="closeModal('qrModal')">Close</button></div>
+ <div class="qrbox"><div id="qrInfo"></div><img id="qrImage" alt="UPI payment QR"><p class="muted">Scan with any UPI app. Internet may be required to load the QR image.</p><button class="btn primary no-print" onclick="window.print()">Print QR / Bill</button></div>
+</div></div>
+
+<script>
+const KEY='ANA_STEEL_TRADERS_V3';
+const steelBrands=['TATA TISCON','SURYADEV 550 CRS','SHYAM STEEL 550D','JSW STEEL','ARS STEEL','BRIGHT TMT','AGNI TMT','GBR TMT','BRILA TMT','VIZAG TMT'];
+const cementBrands=['ULTRATECH CEMENT','PRIYA CEMENT','DALMIA CEMENT','ACC CEMENT','RAMCO CEMENT','CHETTINAD CEMENT','ZUARI CEMENT','BHARATHI CEMENT','KCP CEMENT','JSW CEMENT','MAHA CEMENT'];
+const baseProducts=[
+ ['TMT STEEL',''],['CEMENT',''],['MS SQUARES',''],['MS FLATS',''],['MS ANGLES',''],['MS TUBES',''],['MS ROUND',''],['GP SHEETS',''],['GC SHEETS',''],['HR SHEETS',''],['CR SHEETS',''],['COLOUR ROOFING SHEETS',''],['CEMENT SHEETS',''],['BINDING WIRE',''],['BARBED WIRE',''],['WELMESH',''],['WELDING RODS',''],['CUTTING WHEELS',''],['GRINDING WHEELS','']
+].concat(steelBrands.map(x=>['TMT STEEL',x]),cementBrands.map(x=>['CEMENT',x])).map((x,i)=>({id:'p'+i,name:x[0],brand:x[1]}));
+let db=load();let items=[];let editingId=null;
+
+function today(){let d=new Date(),o=d.getTimezoneOffset();return new Date(d.getTime()-o*60000).toISOString().slice(0,10)}
+function money(n){return '₹'+Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function load(){let blank={bills:[],payments:[],products:baseProducts};try{let x=JSON.parse(localStorage.getItem(KEY));if(!x||typeof x!=='object')return blank;x.bills=Array.isArray(x.bills)?x.bills:[];x.payments=Array.isArray(x.payments)?x.payments:[];x.products=Array.isArray(x.products)&&x.products.length?x.products:baseProducts;return x}catch(e){return blank}}
+function saveDB(){localStorage.setItem(KEY,JSON.stringify(db))}
+function go(p){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.getElementById(p).classList.add('active');document.querySelectorAll('[data-page]').forEach(x=>x.classList.toggle('active',x.dataset.page===p));document.getElementById('pageTitle').textContent={dashboard:'Dashboard',billing:'New Bill / Estimate',sales:'Sales Report',quotations:'Quotations',payments:'Payments / Collection',customers:'Customers / Ledger',products:'Products & Brands',backup:'Backup / Settings'}[p];renderAll()}
+document.querySelectorAll('[data-page]').forEach(b=>b.onclick=()=>go(b.dataset.page));
+
+function newBill(type='estimate'){editingId=null;go('billing');document.getElementById('docType').value=type;document.getElementById('docNo').value='';document.getElementById('billDate').value=today();document.getElementById('taxType').value='non-gst';document.getElementById('gstRate').value='0';document.getElementById('paymentMode').value=type==='quotation'?'Unpaid':'Unpaid';document.getElementById('paidNow').value=0;['customerName','customerPhone','customerAddress','customerGstin','upiId','billNotes'].forEach(id=>document.getElementById(id).value='');document.getElementById('discount').value=0;items=[];addItem();docTypeChanged()}
+function clearBill(){if(confirm('Clear current document?'))newBill(document.getElementById('docType').value)}
+function docTypeChanged(){let q=document.getElementById('docType').value==='quotation';document.getElementById('paidNow').disabled=q;document.getElementById('paymentMode').disabled=q;document.getElementById('taxType').disabled=q;document.getElementById('gstRate').disabled=q;if(q){document.getElementById('paidNow').value=0;document.getElementById('paymentMode').value='Unpaid'}recalc()}
+function addItem(x={name:'',brand:'',qty:1,unit:'Nos',rate:0}){items.push({...x});renderItems()}
+function removeItem(i){items.splice(i,1);renderItems()}
+function names(){return [...new Set(db.products.map(p=>p.name))]}
+function brands(){return [...new Set(db.products.map(p=>p.brand).filter(Boolean))]}
+function opts(arr,sel,blank){return (blank?'<option value="">Select</option>':'')+arr.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('')}
+function renderItems(){document.getElementById('itemRows').innerHTML=items.map((x,i)=>`<tr><td>${i+1}</td><td><select onchange="items[${i}].name=this.value">${opts(names(),x.name,true)}</select></td><td><select onchange="items[${i}].brand=this.value">${opts(brands(),x.brand,true)}</select></td><td><input type="number" min="0" step=".001" value="${x.qty}" oninput="items[${i}].qty=this.value;recalc()"></td><td><select onchange="items[${i}].unit=this.value">${opts(['Kg','Tonne','Pcs','Nos','Bags','Box','Roll','Sheets','Sq.Ft','Sq.Mtr'],x.unit,false)}</select></td><td><input type="number" min="0" step=".01" value="${x.rate}" oninput="items[${i}].rate=this.value;recalc()"></td><td class="right" id="a${i}">${money(Number(x.qty)*Number(x.rate))}</td><td class="no-print"><button class="btn danger" onclick="removeItem(${i})">×</button></td></tr>`).join('');recalc()}
+function totals(){let sub=items.reduce((s,x)=>s+Number(x.qty||0)*Number(x.rate||0),0),dis=Number(document.getElementById('discount').value||0),taxable=Math.max(0,sub-dis),gst=document.getElementById('taxType').value==='gst'?taxable*Number(document.getElementById('gstRate').value||0)/100:0,total=taxable+gst;return{sub,dis,taxable,gst,total}}
+function recalc(){let t=totals(),q=document.getElementById('docType').value==='quotation';
+  updateInvoiceQR();document.getElementById('subtotal').textContent=money(t.sub);document.getElementById('gstAmount').textContent=money(t.gst);document.getElementById('grandTotal').textContent=money(t.total);document.getElementById('gstRow').classList.toggle('hide',document.getElementById('taxType').value!=='gst');let paid=q?0:Math.min(t.total,Math.max(0,Number(document.getElementById('paidNow').value||0)));document.getElementById('paidAmount').value=paid.toFixed(2);document.getElementById('balanceAmount').textContent=money(t.total-paid);items.forEach((x,i)=>{let a=document.getElementById('a'+i);if(a)a.textContent=money(Number(x.qty||0)*Number(x.rate||0))})}
+function formBill(){let t=totals(),type=document.getElementById('docType').value,q=type==='quotation',paid=q?0:Math.min(t.total,Math.max(0,Number(document.getElementById('paidNow').value||0)));return{id:editingId||'b'+Date.now()+Math.random().toString(36).slice(2),type,no:document.getElementById('docNo').value.trim(),date:document.getElementById('billDate').value||today(),taxType:q?'non-gst':document.getElementById('taxType').value,gstRate:q?0:Number(document.getElementById('gstRate').value||0),paymentMode:q?'Not Applicable':document.getElementById('paymentMode').value,customer:document.getElementById('customerName').value.trim()||'Cash Customer',phone:document.getElementById('customerPhone').value.trim(),address:document.getElementById('customerAddress').value.trim(),gstin:document.getElementById('customerGstin').value.trim(),upiId:document.getElementById('upiId').value.trim(),notes:document.getElementById('billNotes').value.trim(),items:JSON.parse(JSON.stringify(items)),subtotal:t.sub,discount:t.dis,taxable:t.taxable,gst:t.gst,total:t.total,paid,balance:Math.max(0,t.total-paid),status:paid>=t.total&&t.total>0?'PAID':paid>0?'PARTIAL':'UNPAID'}}
+function saveBill(silent=false){let b=formBill();if(!b.items.some(x=>x.name)){alert('Add at least one product.');return null}if(!b.no){alert('Enter document number, e.g. ES-001 or QT-001.');return null}if(db.bills.some(x=>x.no.toLowerCase()===b.no.toLowerCase()&&x.type===b.type&&x.id!==b.id)){alert('This document number is already used.');return null}let old=db.bills.find(x=>x.id===b.id);if(old&&b.type==='estimate'&&b.paid!==old.paid){let diff=b.paid-old.paid;if(diff>0)db.payments.push({id:'pay'+Date.now(),date:b.date,billId:b.id,billNo:b.no,customer:b.customer,amount:diff,mode:b.paymentMode,note:'Payment received with bill / edited payment'})}let idx=db.bills.findIndex(x=>x.id===b.id);if(idx>=0)db.bills[idx]=b;else db.bills.push(b);editingId=b.id;saveDB();renderAll();if(!silent)alert((b.type==='quotation'?'Quotation':'Bill')+' saved: '+b.no);return b}
+function savePrint(){let b=saveBill(true);if(b){alert('Saved. Print dialog will open.');window.print()}}
+function loadBill(id){let b=db.bills.find(x=>x.id===id);if(!b)return;editingId=id;go('billing');document.getElementById('docType').value=b.type;document.getElementById('docNo').value=b.no;document.getElementById('billDate').value=b.date;document.getElementById('taxType').value=b.taxType||'non-gst';document.getElementById('gstRate').value=b.gstRate||0;document.getElementById('paymentMode').value=b.paymentMode||'Unpaid';document.getElementById('paidNow').value=b.paid||0;document.getElementById('customerName').value=b.customer;document.getElementById('customerPhone').value=b.phone||'';document.getElementById('customerAddress').value=b.address||'';document.getElementById('customerGstin').value=b.gstin||'';document.getElementById('upiId').value=b.upiId||'';document.getElementById('billNotes').value=b.notes||'';document.getElementById('discount').value=b.discount||0;items=JSON.parse(JSON.stringify(b.items||[]));docTypeChanged();renderItems()}
+function deleteBill(id){if(!confirm('Delete this document and its linked collection records?'))return;db.bills=db.bills.filter(x=>x.id!==id);db.payments=db.payments.filter(x=>x.billId!==id);saveDB();renderAll()}
+
+function renderDashboard(){let bills=db.bills.filter(b=>b.type==='estimate'),quotes=db.bills.filter(b=>b.type==='quotation'),todayBills=bills.filter(b=>b.date===today()),sales=bills.reduce((s,b)=>s+b.total,0),coll=bills.reduce((s,b)=>s+b.paid,0),out=bills.reduce((s,b)=>s+b.balance,0);let customerKeys=[...new Set(bills.map(b=>(b.customer||'Cash Customer').toLowerCase()))];document.getElementById('dToday').textContent=money(todayBills.reduce((s,b)=>s+b.total,0));document.getElementById('dTodayPaid').textContent=money(collectionOnDate(today()));document.getElementById('dSales').textContent=money(sales);document.getElementById('dCollection').textContent=money(coll);document.getElementById('dOutstanding').textContent=money(out);document.getElementById('dBills').textContent=bills.length;document.getElementById('dQuotes').textContent=quotes.length;document.getElementById('dCustomers').textContent=customerKeys.length;let rows=db.bills.slice(-10).reverse();document.getElementById('recent').innerHTML=rows.length?`<table class="report"><thead><tr><th>Date</th><th>No.</th><th>Customer</th><th>Type</th><th class="right">Total</th><th></th></tr></thead><tbody>${rows.map(b=>`<tr><td>${esc(b.date)}</td><td><b>${esc(b.no)}</b></td><td>${esc(b.customer)}</td><td><span class="pill">${b.type==='quotation'?'QUOTATION':b.status}</span></td><td class="right">${money(b.total)}</td><td><button class="btn light" onclick="loadBill('${b.id}')">Open</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No documents yet.</div>'}
+function collectionOnDate(d){return db.payments.filter(p=>p.date===d).reduce((s,p)=>s+Number(p.amount||0),0)+db.bills.filter(b=>b.type==='estimate'&&b.date===d).reduce((s,b)=>s+b.paid,0)-db.payments.filter(p=>p.date===d&&db.bills.some(b=>b.id===p.billId&&b.date===d)).reduce((s,p)=>s+p.amount,0)}
+
+function renderSales(){let q=(document.getElementById('salesSearch')?.value||'').toLowerCase(),d=document.getElementById('salesDate')?.value||'',a=db.bills.filter(b=>b.type==='estimate'&&(!d||b.date===d)&&(!q||(`${b.no} ${b.customer} ${b.phone}`).toLowerCase().includes(q)));let total=a.reduce((s,b)=>s+b.total,0),paid=a.reduce((s,b)=>s+b.paid,0),bal=a.reduce((s,b)=>s+b.balance,0);document.getElementById('salesSummary').innerHTML=`<div class="cards" style="grid-template-columns:repeat(3,1fr);margin-bottom:14px"><div class="card stat"><div class="label">Sales</div><div class="value">${money(total)}</div></div><div class="card stat green"><div class="label">Paid</div><div class="value">${money(paid)}</div></div><div class="card stat red"><div class="label">Outstanding</div><div class="value">${money(bal)}</div></div></div>`;document.getElementById('salesTable').innerHTML=a.length?`<table class="report"><thead><tr><th>Date</th><th>No.</th><th>Customer</th><th>Tax</th><th>Status</th><th class="right">Sales</th><th class="right">Paid</th><th class="right">Balance</th><th class="no-print">Actions</th></tr></thead><tbody>${a.sort((x,y)=>y.date.localeCompare(x.date)).map(b=>`<tr><td>${b.date}</td><td><b>${esc(b.no)}</b></td><td>${esc(b.customer)}</td><td>${b.taxType==='gst'?'GST '+b.gstRate+'%':'NON-GST'}</td><td>${b.status}</td><td class="right">${money(b.total)}</td><td class="right">${money(b.paid)}</td><td class="right">${money(b.balance)}</td><td class="no-print"><button class="btn light" onclick="loadBill('${b.id}')">Edit</button> <button class="btn wa" onclick="whatsappBill('${b.id}')">WhatsApp</button> <button class="btn danger" onclick="deleteBill('${b.id}')">Delete</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No sales found.</div>'}
+function resetSales(){document.getElementById('salesDate').value='';document.getElementById('salesSearch').value='';renderSales()}
+
+function renderQuotes(){let q=(document.getElementById('quoteSearch')?.value||'').toLowerCase(),a=db.bills.filter(b=>b.type==='quotation'&&(!q||(`${b.no} ${b.customer}`).toLowerCase().includes(q)));document.getElementById('quoteTable').innerHTML=a.length?`<table class="report"><thead><tr><th>Date</th><th>Quotation</th><th>Customer</th><th>Tax</th><th class="right">Value</th><th>Actions</th></tr></thead><tbody>${a.sort((x,y)=>y.date.localeCompare(x.date)).map(b=>`<tr><td>${b.date}</td><td><b>${esc(b.no)}</b></td><td>${esc(b.customer)}</td><td>Quotation</td><td class="right">${money(b.total)}</td><td><button class="btn light" onclick="loadBill('${b.id}')">Edit</button> <button class="btn wa" onclick="whatsappBill('${b.id}')">WhatsApp</button> <button class="btn yellow" onclick="convertQuote('${b.id}')">Convert to Bill</button> <button class="btn danger" onclick="deleteBill('${b.id}')">Delete</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No quotations found.</div>'}
+function convertQuote(id){let b=db.bills.find(x=>x.id===id);if(!b)return;editingId=null;loadBill(id);document.getElementById('docType').value='estimate';document.getElementById('docNo').value='';document.getElementById('paidNow').value=0;editingId=null;alert('Quotation copied into billing. Enter a new bill number and save.');docTypeChanged()}
+
+function renderPayments(){let d=document.getElementById('payDate')?.value||'',tx=db.payments.filter(p=>!d||p.date===d).sort((a,b)=>b.date.localeCompare(a.date));let bills=db.bills.filter(b=>b.type==='estimate'),sales=bills.reduce((s,b)=>s+b.total,0),paid=bills.reduce((s,b)=>s+b.paid,0),bal=bills.reduce((s,b)=>s+b.balance,0),col=tx.reduce((s,p)=>s+p.amount,0);document.getElementById('paymentSummary').innerHTML=`<div class="cards" style="grid-template-columns:repeat(4,1fr);margin-bottom:14px"><div class="card stat"><div class="label">Total Sales</div><div class="value">${money(sales)}</div></div><div class="card stat green"><div class="label">All Paid</div><div class="value">${money(paid)}</div></div><div class="card stat red"><div class="label">Outstanding</div><div class="value">${money(bal)}</div></div><div class="card stat green"><div class="label">Selected Collection</div><div class="value">${money(col)}</div></div></div>`;document.getElementById('paymentTable').innerHTML=tx.length?`<table class="report"><thead><tr><th>Date</th><th>Bill</th><th>Customer</th><th>Method</th><th>Note</th><th class="right">Amount</th><th class="no-print">Action</th></tr></thead><tbody>${tx.map(p=>`<tr><td>${p.date}</td><td>${esc(p.billNo)}</td><td>${esc(p.customer)}</td><td>${esc(p.mode)}</td><td>${esc(p.note)}</td><td class="right">${money(p.amount)}</td><td class="no-print"><button class="btn danger" onclick="deletePayment('${p.id}')">Delete</button></td></tr>`).join('')}</tbody></table>`:'<div class="empty">No collection transactions for the selected date.</div>'}
+function openPayment(){let a=db.bills.filter(b=>b.type==='estimate'&&b.balance>0);if(!a.length){alert('No outstanding bills available.');return}document.getElementById('payBill').innerHTML=a.map(b=>`<option value="${b.id}">${esc(b.no)} — ${esc(b.customer)} — Balance ${money(b.balance)}</option>`).join('');document.getElementById('payDateNew').value=today();document.getElementById('payAmt').value='';document.getElementById('payNote').value='';document.getElementById('payModal').classList.add('show')}
+function closeModal(id){document.getElementById(id).classList.remove('show')}
+function recordPayment(){let b=db.bills.find(x=>x.id===document.getElementById('payBill').value),amt=Number(document.getElementById('payAmt').value||0);if(!b||amt<=0)return alert('Enter a valid collection amount.');amt=Math.min(amt,b.balance);let p={id:'pay'+Date.now()+Math.random().toString(36).slice(2),date:document.getElementById('payDateNew').value||today(),billId:b.id,billNo:b.no,customer:b.customer,amount:amt,mode:document.getElementById('payMode').value,note:document.getElementById('payNote').value.trim()};db.payments.push(p);b.paid+=amt;b.balance=Math.max(0,b.total-b.paid);b.status=b.paid>=b.total?'PAID':'PARTIAL';saveDB();closeModal('payModal');renderAll();alert('Collection saved.')}
+function deletePayment(id){if(!confirm('Delete this collection? The bill paid amount will be reduced.'))return;let p=db.payments.find(x=>x.id===id),b=p&&db.bills.find(x=>x.id===p.billId);if(b){b.paid=Math.max(0,b.paid-p.amount);b.balance=Math.max(0,b.total-b.paid);b.status=b.paid>=b.total?'PAID':b.paid>0?'PARTIAL':'UNPAID'}db.payments=db.payments.filter(x=>x.id!==id);saveDB();renderAll()}
+
+function renderCustomers(){let q=(document.getElementById('custSearch')?.value||'').toLowerCase(),m={};db.bills.filter(b=>b.type==='estimate').forEach(b=>{let k=(b.customer||'Cash Customer').trim().toLowerCase();if(!m[k])m[k]={name:b.customer,phone:b.phone||'',sales:0,paid:0,balance:0,bills:0};let x=m[k];x.sales+=b.total;x.paid+=b.paid;x.balance+=b.balance;x.bills++;if(!x.phone)x.phone=b.phone||''});let a=Object.values(m).filter(x=>(x.name+' '+x.phone).toLowerCase().includes(q)).sort((x,y)=>y.sales-x.sales);document.getElementById('customerTable').innerHTML=a.length?`<table class="report"><thead><tr><th>Customer</th><th>Mobile</th><th>Bills</th><th class="right">Sales</th><th class="right">Paid</th><th class="right">Balance</th></tr></thead><tbody>${a.map(x=>`<tr><td><b>${esc(x.name)}</b></td><td>${esc(x.phone)}</td><td>${x.bills}</td><td class="right">${money(x.sales)}</td><td class="right">${money(x.paid)}</td><td class="right">${money(x.balance)}</td></tr>`).join('')}</tbody></table>`:'<div class="empty">No customers found.</div>'}
+
+function renderProducts(){document.getElementById('productList').innerHTML=`<table class="report"><thead><tr><th>Product</th><th>Brand</th><th>Action</th></tr></thead><tbody>${db.products.map(p=>`<tr><td>${esc(p.name)}</td><td>${esc(p.brand)}</td><td><button class="btn danger" onclick="deleteProduct('${p.id}')">Delete</button></td></tr>`).join('')}</tbody></table>`}
+function addProduct(){let n=document.getElementById('newProduct').value.trim(),b=document.getElementById('newBrand').value.trim();if(!n)return;db.products.push({id:'p'+Date.now(),name:n,brand:b});saveDB();document.getElementById('newProduct').value='';document.getElementById('newBrand').value='';renderProducts()}
+function deleteProduct(id){if(confirm('Delete this product from the catalogue?')){db.products=db.products.filter(p=>p.id!==id);saveDB();renderProducts()}}
+
+function waPhone(phone){let p=String(phone||'').replace(/\D/g,'');if(p.length===12&&p.startsWith('91'))return p;if(p.length===10)return '91'+p;return ''}
+function waSend(phone,text){let p=waPhone(phone);if(!p){alert('Invalid mobile number. Enter a valid 10-digit Indian mobile number.');return}window.open('https://wa.me/'+p+'?text='+encodeURIComponent(text),'_blank')}
+function waMessage(b){let a=['Hello '+(b.customer||'Customer')+',','', 'ANA_ESTIMATE_BILLING', (b.type==='quotation'?'QUOTATION: ':'ESTIMATE / INVOICE: ')+b.no,'Date: '+b.date,''];(b.items||[]).forEach((x,i)=>a.push((i+1)+'. '+(x.name||'Product')+(x.brand?' - '+x.brand:'')+' | '+x.qty+' '+x.unit+' x '+money(x.rate)+' = '+money(Number(x.qty||0)*Number(x.rate||0))));a.push('','Subtotal: '+money(b.subtotal));if(Number(b.discount||0))a.push('Discount: '+money(b.discount));if(b.taxType==='gst')a.push('GST ('+b.gstRate+'%): '+money(b.gst));a.push('TOTAL: '+money(b.total));if(b.type==='estimate'){a.push('Paid: '+money(b.paid),'PENDING: '+money(b.balance));}if(b.notes)a.push('Note: '+b.notes);a.push('','Thank you.');return a.join('\n')}
+function whatsappBill(id){let b=db.bills.find(x=>x.id===id);if(!b)return;if(!b.phone){alert('Add the customer mobile number before sending WhatsApp.');return}waSend(b.phone,waMessage(b))}
+function whatsappCurrent(){let b=formBill();if(!b.no){alert('Enter document number first.');return}if(!b.phone){alert('Enter customer mobile number first.');return}waSend(b.phone,waMessage(b))}
+function whatsappReminderByBill(b){if(!b.phone){alert('No mobile number for '+(b.customer||'customer')+'.');return}let msg='Hello '+(b.customer||'Customer')+',\n\nPayment reminder from ANA_ESTIMATE_BILLING.\n\nInvoice: '+b.no+'\nTotal: '+money(b.total)+'\nPaid: '+money(b.paid)+'\nPending: '+money(b.balance)+'\n\nKindly arrange the pending payment.\nThank you.';waSend(b.phone,msg)}
+function whatsappOutstanding(){let a=db.bills.filter(b=>b.type==='estimate'&&Number(b.balance)>0);if(!a.length){alert('No pending payments found.');return}let phone=prompt('Enter customer 10-digit mobile number:');if(phone===null)return;let p=waPhone(phone);if(!p){alert('Invalid mobile number. Enter a valid 10-digit Indian mobile number.');return}let b=a.find(x=>waPhone(x.phone)===p);if(!b){alert('No outstanding bill found for this mobile number.');return}whatsappReminderByBill(b)}
+
+function updateInvoiceQR(){
+  let upi=document.getElementById('upiId').value.trim();
+  let box=document.getElementById('invoiceQRPrint');
+  if(!box)return;
+  if(!upi){box.classList.add('hide');return}
+  let t=totals(),name='ANA_ESTIMATE_BILLING',note=document.getElementById('docNo').value||'Payment';
+  let uri='upi://pay?pa='+encodeURIComponent(upi)+'&pn='+encodeURIComponent(name)+'&am='+encodeURIComponent(t.total)+'&cu=INR&tn='+encodeURIComponent(note);
+  document.getElementById('invoiceQRImage').src='https://quickchart.io/qr?size=300&text='+encodeURIComponent(uri);
+  document.getElementById('invoiceQRText').innerHTML=esc(upi)+' &nbsp;|&nbsp; Amount: <b>'+money(t.total)+'</b>';
+  box.classList.remove('hide');
+}
+
+function showQR(){let upi=document.getElementById('upiId').value.trim();if(!upi)return alert('Enter a UPI ID first.');updateInvoiceQR();let t=totals(),name='ANA_ESTIMATE_BILLING',note=document.getElementById('docNo').value||'Payment';let uri='upi://pay?pa='+encodeURIComponent(upi)+'&pn='+encodeURIComponent(name)+'&am='+encodeURIComponent(t.total)+'&cu=INR&tn='+encodeURIComponent(note);document.getElementById('qrInfo').innerHTML='<b>'+esc(name)+'</b><br>'+esc(upi)+'<br>Amount: <b>'+money(t.total)+'</b>';document.getElementById('qrImage').src='https://quickchart.io/qr?size=300&text='+encodeURIComponent(uri);document.getElementById('qrModal').classList.add('show')}
+
+function printReport(kind){go(kind);setTimeout(()=>window.print(),80)}
+function csv(v){return '"'+String(v??'').replace(/"/g,'""')+'"'}
+function download(name,rows){let blob=new Blob(['\ufeff'+rows.map(r=>r.map(csv).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function exportCSV(kind){if(kind==='sales'){let a=db.bills.filter(b=>b.type==='estimate');download('ANA-Sales-'+today()+'.csv',[['Date','Bill','Customer','Mobile','Tax','Total','Paid','Balance','Status'],...a.map(b=>[b.date,b.no,b.customer,b.phone,b.taxType==='gst'?'GST '+b.gstRate+'%':'NON-GST',b.total,b.paid,b.balance,b.status])])}else if(kind==='payments'){download('ANA-Payments-'+today()+'.csv',[['Date','Bill','Customer','Method','Note','Amount'],...db.payments.map(p=>[p.date,p.billNo,p.customer,p.mode,p.note,p.amount])])}else if(kind==='customers'){let m={};db.bills.filter(b=>b.type==='estimate').forEach(b=>{let k=b.customer.toLowerCase();if(!m[k])m[k]={n:b.customer,p:b.phone,s:0,pa:0,ba:0,c:0};m[k].s+=b.total;m[k].pa+=b.paid;m[k].ba+=b.balance;m[k].c++});download('ANA-Customers-'+today()+'.csv',[['Customer','Mobile','Bills','Sales','Paid','Balance'],...Object.values(m).map(x=>[x.n,x.p,x.c,x.s,x.pa,x.ba])])}}
+
+function exportBackup(){let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ANA-Steel-Traders-Backup-'+today()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function importBackup(e){let f=e.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let x=JSON.parse(r.result);if(!Array.isArray(x.bills)||!Array.isArray(x.products))throw 0;db={bills:x.bills,payments:Array.isArray(x.payments)?x.payments:[],products:x.products};saveDB();renderAll();alert('Backup imported successfully.')}catch(err){alert('Invalid backup file.')}};r.readAsText(f)}
+function resetAll(){if(confirm('Delete ALL bills, quotations, payments and custom products?')){localStorage.removeItem(KEY);db=load();newBill('estimate');renderAll()}}
+
+function renderAll(){if(document.getElementById('dashboard').classList.contains('active'))renderDashboard();renderSales();renderQuotes();renderPayments();renderCustomers();renderProducts()}
+document.getElementById('payModal').onclick=e=>{if(e.target.id==='payModal')closeModal('payModal')};
+document.getElementById('qrModal').onclick=e=>{if(e.target.id==='qrModal')closeModal('qrModal')};
+newBill('estimate');renderAll();
+</script>
+</body>
+</html>
